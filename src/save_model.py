@@ -44,9 +44,9 @@ print(f"R²: {r2_score(y_test, y_pred):.4f}")
 print(f"MAE: {mean_absolute_error(y_test, y_pred):.4f}")
 print(f"RMSE: {np.sqrt(np.mean((y_test-y_pred)**2)):.4f}")
 
-with open("co2_model.pkl","wb") as f:
+with open("random_forest_model.pkl","wb") as f:
     pickle.dump({"model": rf_model, "scaler": scaler,
                  "feature_columns": feature_columns}, f)
 
-print(f"\n✅ Saved → co2_model.pkl  ({len(feature_columns)} features)")
+print(f"\n✅ Saved → random_forest_model.pkl  ({len(feature_columns)} features)")
 print("Columns:", feature_columns)
