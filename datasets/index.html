@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CarbonIQ | CO₂ Emission Intelligence</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Inter,sans-serif;background:#f9fafb;color:#111827}
+nav{display:flex;justify-content:space-between;align-items:center;padding:20px 8%;border-bottom:1px solid #e5e7eb;background:#fff;position:sticky;top:0;z-index:100}
+.logo{font-size:28px;font-weight:800;color:#7b001c;letter-spacing:-0.5px}
+.logo span{font-weight:400;color:#6b7280;font-size:14px}
+.menu{display:flex;gap:30px}
+.menu a{text-decoration:none;color:#6b7280;font-weight:500;transition:color 0.2s}
+.menu a:hover,.menu a.active{color:#7b001c}
+.hero{padding:60px 8% 40px;text-align:center;background:linear-gradient(135deg,#fff 0%,#fef2f2 100%)}
+.hero h1{font-size:52px;font-weight:800;margin-bottom:16px}
+.hero span{color:#7b001c;background:linear-gradient(135deg,#7b001c,#b91c1c);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{max-width:700px;margin:0 auto;color:#6b7280;line-height:1.7;font-size:16px}
+.container{width:min(1300px,92%);margin:40px auto}
+.main-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:28px;padding:32px;box-shadow:0 8px 30px rgba(0,0,0,.04);transition:transform 0.2s,box-shadow 0.2s}
+.card:hover{box-shadow:0 15px 40px rgba(0,0,0,.08)}
+.section-title{font-size:22px;font-weight:700;margin-bottom:24px;display:flex;align-items:center;gap:10px;color:#1f2937}
+.section-title .icon{width:32px;height:32px;background:#7b001c10;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;color:#7b001c}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+.full-width{grid-column:span 2}
+label{display:block;margin-bottom:8px;font-weight:600;font-size:13px;color:#374151;letter-spacing:0.3px}
+input,select{width:100%;padding:12px 14px;border:1.5px solid #e5e7eb;border-radius:14px;background:#fff;font-family:Inter;font-size:14px;transition:all 0.2s}
+input:focus,select:focus{outline:none;border-color:#7b001c;box-shadow:0 0 0 3px rgba(123,0,28,.1)}
+.range-group{display:flex;align-items:center;gap:12px}
+input[type=range]{flex:1;padding:0;accent-color:#7b001c}
+.range-val{background:#fef2f2;padding:6px 12px;border-radius:20px;font-size:13px;font-weight:600;color:#7b001c;min-width:65px;text-align:center}
+.predict-btn{width:100%;padding:16px;border:none;border-radius:20px;background:#7b001c;color:#fff;font-weight:700;font-size:16px;margin-top:28px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:10px}
+.predict-btn:hover{background:#5e0015;transform:translateY(-2px);box-shadow:0 10px 25px rgba(123,0,28,.3)}
+.predict-btn:disabled{opacity:0.6;transform:none;cursor:not-allowed}
+.result-card{display:flex;flex-direction:column;gap:24px}
+.gauge-wrapper{text-align:center;padding:10px}
+.gauge-container{position:relative;width:260px;margin:0 auto}
+.gauge-svg{display:block;width:100%;height:auto}
+.co2-number{font-size:56px;font-weight:800;color:#7b001c;font-family:monospace}
+.co2-unit{font-size:14px;color:#6b7280}
+.rating-pill{display:inline-block;padding:6px 20px;border-radius:40px;font-size:13px;font-weight:700;margin-top:12px}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+.stat-item{background:#f9fafb;border-radius:18px;padding:16px;text-align:center;border:1px solid #f0f0f0}
+.stat-label{font-size:11px;color:#6b7280;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.stat-value{font-size:22px;font-weight:800;color:#1f2937}
+.stat-sub{font-size:12px;color:#6b7280;margin-top:4px}
+.tree-badge{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:2px solid #86efac;border-radius:20px;padding:18px;margin-top:16px;text-align:center}
+.tree-badge h4{color:#166534;font-size:16px;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px}
+.tree-number{font-size:42px;font-weight:800;color:#15803d;font-family:monospace}
+.tree-unit{font-size:14px;color:#166534;margin-left:5px}
+.tree-note{font-size:11px;color:#6b7280;margin-top:8px}
+.impact-badge{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:16px;padding:16px;margin-top:16px}
+.impact-badge p{margin:6px 0;font-size:13px;display:flex;align-items:center;gap:8px}
+.model-note{background:#fef2f2;border-radius:16px;padding:14px;text-align:center;font-size:11px;color:#7b001c;margin-top:16px}
+.error-msg{background:#fee2e2;border-radius:14px;padding:12px;font-size:12px;color:#b91c1c;margin-top:16px;display:none}
+footer{text-align:center;padding:40px 8%;color:#6b7280;border-top:1px solid #e5e7eb;margin-top:40px;font-size:13px}
+@media(max-width:1000px){.main-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.full-width{grid-column:span 1}.hero h1{font-size:36px}}
+</style>
+</head>
+<body>
+
+<nav>
+<div class="logo">CarbonIQ <span>| ML model </span></div>
+</nav>
+
+<section class="hero">
+<h1><span>Carbon Emission</span> Prediction System</h1>
+<p>An intelligent machine learning system that estimates vehicle carbon emissions based on engine specifications, fuel consumption, transmission type, and vehicle category.</p>
+</section>
+
+<div class="container">
+<div class="main-grid">
+
+<!-- Input Form Card -->
+<div class="card">
+<div class="section-title">
+Vehicle Specifications
+</div>
+
+<div class="grid">
+<div>
+<label>Vehicle Class</label>
+<select id="vehicle_class">
+<option value="COMPACT">Compact</option>
+<option value="SUBCOMPACT">Subcompact</option>
+<option value="MINICOMPACT">Minicompact</option>
+<option value="MID-SIZE" selected>Mid-size</option>
+<option value="FULL-SIZE">Full-size</option>
+<option value="TWO-SEATER">Two-seater</option>
+<option value="'SUV - SMALL'">SUV - Small</option>
+<option value="'SUV - STANDARD'">SUV - Standard</option>
+<option value="'PICKUP TRUCK - SMALL'">Pickup Truck - Small</option>
+<option value="'PICKUP TRUCK - STANDARD'">Pickup Truck - Standard</option>
+<option value="MINIVAN">Minivan</option>
+<option value="'VAN - CARGO'">Van - Cargo</option>
+<option value="'VAN - PASSENGER'">Van - Passenger</option>
+<option value="'STATION WAGON - SMALL'">Station Wagon - Small</option>
+<option value="'STATION WAGON - MID-SIZE'">Station Wagon - Mid-Size</option>
+<option value="'SPECIAL PURPOSE VEHICLE'">Special Purpose Vehicle</option>
+</select>
+</div>
+
+<div>
+<label>Fuel Type</label>
+<select id="fuel_type">
+<option value="X" selected>Regular Gasoline (X)</option>
+<option value="Z">Premium Gasoline (Z)</option>
+<option value="D">Diesel (D)</option>
+<option value="E">Ethanol E85 (E)</option>
+</select>
+</div>
+
+<div>
+<label>Transmission</label>
+<select id="transmission">
+<option value="A4">A4 - Automatic 4-speed</option>
+<option value="A5">A5 - Automatic 5-speed</option>
+<option value="A6" selected>A6 - Automatic 6-speed</option>
+<option value="A7">A7 - Automatic 7-speed</option>
+<option value="A8">A8 - Automatic 8-speed</option>
+<option value="A9">A9 - Automatic 9-speed</option>
+<option value="A10">A10 - Automatic 10-speed</option>
+<option value="AM6">AM6 - Automated Manual 6-spd</option>
+<option value="AM7">AM7 - Automated Manual 7-spd</option>
+<option value="AM8">AM8 - Automated Manual 8-spd</option>
+<option value="AS5">AS5 - Auto-select 5-spd</option>
+<option value="AS6">AS6 - Auto-select 6-spd</option>
+<option value="AS7">AS7 - Auto-select 7-spd</option>
+<option value="AS8">AS8 - Auto-select 8-spd</option>
+<option value="AV">AV - CVT</option>
+<option value="AV6">AV6 - CVT 6-spd</option>
+<option value="AV7">AV7 - CVT 7-spd</option>
+<option value="AV8">AV8 - CVT 8-spd</option>
+<option value="M5">M5 - Manual 5-speed</option>
+<option value="M6">M6 - Manual 6-speed</option>
+<option value="M7">M7 - Manual 7-speed</option>
+</select>
+</div>
+
+<div>
+<label>Engine Size <span style="font-weight:400">(L)</span></label>
+<div class="range-group">
+<input type="range" id="engine_size" min="1.0" max="6.8" step="0.1" value="2.5">
+<span class="range-val" id="engine_size_val">2.5 L</span>
+</div>
+</div>
+
+<div>
+<label>Cylinders</label>
+<div class="range-group">
+<input type="range" id="cylinders" min="3" max="12" step="1" value="4">
+<span class="range-val" id="cylinders_val">4 cyl</span>
+</div>
+</div>
+
+<div>
+<label>City Consumption <span style="font-weight:400">(L/100km)</span></label>
+<div class="range-group">
+<input type="range" id="fuel_consumption_city" min="4.3" max="30.3" step="0.1" value="10.5">
+<span class="range-val" id="city_val">10.5</span>
+</div>
+</div>
+
+<div>
+<label>Highway Consumption <span style="font-weight:400">(L/100km)</span></label>
+<div class="range-group">
+<input type="range" id="fuel_consumption_hwy" min="4.5" max="20.5" step="0.1" value="7.8">
+<span class="range-val" id="hwy_val">7.8</span>
+</div>
+</div>
+
+<div>
+<label>Combined Consumption <span style="font-weight:400">(L/100km)</span></label>
+<div class="range-group">
+<input type="range" id="fuel_consumption_comb" min="4.5" max="25.9" step="0.1" value="9.3">
+<span class="range-val" id="comb_val">9.3</span>
+</div>
+</div>
+
+<div>
+<label>Fuel Efficiency <span style="font-weight:400">(MPG)</span></label>
+<div class="range-group">
+<input type="range" id="fuel_consumption_mpg" min="11" max="63" step="1" value="30">
+<span class="range-val" id="mpg_val">30 MPG</span>
+</div>
+</div>
+</div>
+
+<div class="error-msg" id="errorMsg"></div>
+
+<button class="predict-btn" id="predictBtn">
+⚡ Predict CO₂ Emissions
+</button>
+
+</div>
+
+<!-- Result Card -->
+<div class="card result-card" id="resultCard">
+<div class="section-title">
+Prediction Result
+</div>
+
+<div id="idleState" style="text-align:center;padding:40px 20px">
+<div style="font-size:64px;margin-bottom:16px">🌿</div>
+<h3 style="color:#6b7280;font-weight:500">Ready for Prediction</h3>
+<p style="color:#9ca3af;margin-top:10px">Fill in vehicle specifications<br>and click the predict button</p>
+</div>
+
+<div id="resultContent" style="display:none">
+<div class="gauge-wrapper">
+<div class="gauge-container">
+<svg viewBox="0 0 300 170" width="280" height="170">
+<defs>
+<linearGradient id="co2Grad" x1="0%" y1="0%" x2="100%" y2="0%">
+<stop offset="0%" stop-color="#22c55e"/>
+<stop offset="40%" stop-color="#f59e0b"/>
+<stop offset="80%" stop-color="#ef4444"/>
+<stop offset="100%" stop-color="#7b001c"/>
+</linearGradient>
+</defs>
+<path d="M 44 140 A 106 106 0 0 1 256 140" fill="none" stroke="#e5e7eb" stroke-width="12" stroke-linecap="round"/>
+<path id="gaugeArc" d="M 44 140 A 106 106 0 0 1 256 140" fill="none" stroke="url(#co2Grad)" stroke-width="12" stroke-linecap="round" stroke-dasharray="332.5" stroke-dashoffset="332.5"/>
+<g font-family="monospace" font-size="8" fill="#6b7280" text-anchor="middle">
+<text x="38" y="145">50</text><text x="85" y="168">150</text>
+<text x="150" y="176">250</text><text x="210" y="168">350</text>
+<text x="260" y="145">450</text>
+</g>
+<line id="gaugeNeedle" x1="150" y1="140" x2="150" y2="40" stroke="#7b001c" stroke-width="2.8" stroke-linecap="round" transform="rotate(-90 150 140)"/>
+<circle cx="150" cy="140" r="7" fill="#7b001c" stroke="white" stroke-width="2"/>
+<circle cx="150" cy="140" r="3" fill="#fff"/>
+<text x="150" y="118" text-anchor="middle" font-size="10" fill="#374151" font-weight="bold">g/km</text>
+</svg>
+</div>
+</div>
+
+<div style="text-align:center">
+<div class="co2-number" id="co2Num">—</div>
+<div class="co2-unit">grams of CO₂ per kilometer</div>
+<div class="rating-pill" id="ratingPill">—</div>
+</div>
+
+<div class="stats-grid">
+<div class="stat-item">
+<div class="stat-label">vs Average (249)</div>
+<div class="stat-value" id="s_vs" style="font-size:18px">—</div>
+<div class="stat-sub">g/km difference</div>
+</div>
+<div class="stat-item">
+<div class="stat-label">Annual CO₂</div>
+<div class="stat-value" id="s_annual" style="font-size:18px">—</div>
+<div class="stat-sub">kg / year (20k km)</div>
+</div>
+</div>
+
+<!-- Trees Needed Badge - NEW SECTION -->
+<div class="tree-badge" id="treeBadge">
+<h4>🌳 Trees Needed to Offset CO₂</h4>
+<div>
+<span class="tree-number" id="treesCount">—</span>
+<span class="tree-unit">trees/year</span>
+</div>
+<div class="tree-note" id="treeNote">Each tree absorbs ~22 kg CO₂ annually</div>
+</div>
+
+<div class="impact-badge" id="impactMsg">
+<p>🌍 Environmental Impact Assessment</p>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+<footer>
+Developed as part of a Machine Learning Project · CO₂ Emission Prediction using Vehicle Specifications<br>
+Random Forest Regression · Canadian Vehicle Dataset · © 2026 CarbonIQ
+</footer>
+
+<script>
+const API_BASE = "http://localhost:5000";
+
+// Sliders display update
+const SLIDERS = [
+  ["engine_size", "engine_size_val", v => parseFloat(v).toFixed(1) + " L"],
+  ["cylinders", "cylinders_val", v => v + " cyl"],
+  ["fuel_consumption_city", "city_val", v => parseFloat(v).toFixed(1)],
+  ["fuel_consumption_hwy", "hwy_val", v => parseFloat(v).toFixed(1)],
+  ["fuel_consumption_comb", "comb_val", v => parseFloat(v).toFixed(1)],
+  ["fuel_consumption_mpg", "mpg_val", v => v + " MPG"],
+];
+SLIDERS.forEach(([id, out, fmt]) => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener("input", function() {
+    document.getElementById(out).textContent = fmt(this.value);
+  });
+});
+
+// Gauge animation
+const GAUGE_MIN = 50, GAUGE_MAX = 500, ARC_MAX = 332.5;
+function updateGauge(co2Value) {
+  const clamped = Math.min(GAUGE_MAX, Math.max(GAUGE_MIN, co2Value));
+  const fraction = (clamped - GAUGE_MIN) / (GAUGE_MAX - GAUGE_MIN);
+  const targetOffset = ARC_MAX - (fraction * ARC_MAX);
+  const arc = document.getElementById("gaugeArc");
+  const needle = document.getElementById("gaugeNeedle");
+  if (!arc || !needle) return;
+  const startOffset = parseFloat(arc.getAttribute("stroke-dashoffset")) || ARC_MAX;
+  const startRot = parseFloat(needle.getAttribute("data-rot") || "-90");
+  const targetAngle = -90 + (fraction * 180);
+  let start = null;
+  const duration = 450;
+  function step(ts) {
+    if (!start) start = ts;
+    const elapsed = ts - start;
+    const t = Math.min(1, elapsed / duration);
+    const ease = 1 - Math.pow(1 - t, 3);
+    const newOffset = startOffset + (targetOffset - startOffset) * ease;
+    const newRot = startRot + (targetAngle - startRot) * ease;
+    arc.setAttribute("stroke-dashoffset", newOffset.toFixed(1));
+    needle.setAttribute("transform", `rotate(${newRot.toFixed(1)} 150 140)`);
+    needle.setAttribute("data-rot", newRot);
+    if (t < 1) requestAnimationFrame(step);
+    else {
+      arc.setAttribute("stroke-dashoffset", targetOffset.toFixed(1));
+      needle.setAttribute("transform", `rotate(${targetAngle.toFixed(1)} 150 140)`);
+    }
+  }
+  requestAnimationFrame(step);
+}
+
+// Calculate trees needed based on annual CO₂ emissions
+// Average tree absorbs ~22 kg of CO₂ per year (conservative estimate)
+function calculateTreesNeeded(annualCo2Kg) {
+  const CO2_PER_TREE_KG = 22;
+  const trees = Math.ceil(annualCo2Kg / CO2_PER_TREE_KG);
+  return trees;
+}
+
+// Main predict function
+async function predict() {
+  const btn = document.getElementById("predictBtn");
+  const errEl = document.getElementById("errorMsg");
+  errEl.style.display = "none";
+  btn.disabled = true;
+  btn.innerHTML = "<span>🌀</span> Analyzing vehicle data...";
+
+  const payload = {
+    engine_size: parseFloat(document.getElementById("engine_size").value),
+    cylinders: parseFloat(document.getElementById("cylinders").value),
+    fuel_consumption_city: parseFloat(document.getElementById("fuel_consumption_city").value),
+    fuel_consumption_hwy: parseFloat(document.getElementById("fuel_consumption_hwy").value),
+    fuel_consumption_comb: parseFloat(document.getElementById("fuel_consumption_comb").value),
+    fuel_consumption_mpg: parseFloat(document.getElementById("fuel_consumption_mpg").value),
+    vehicle_class: document.getElementById("vehicle_class").value,
+    fuel_type: document.getElementById("fuel_type").value,
+    transmission: document.getElementById("transmission").value,
+  };
+
+  try {
+    const response = await fetch(`${API_BASE}/predict`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    
+    if (!response.ok) throw new Error(`Server error ${response.status}`);
+    const data = await response.json();
+    if (data.error) throw new Error(data.error);
+
+    const co2 = data.co2_gkm;
+    const annualCo2 = data.annual_co2_kg;
+    
+    // Switch UI
+    document.getElementById("idleState").style.display = "none";
+    const rc = document.getElementById("resultContent");
+    rc.style.display = "block";
+    
+    // Update CO2 number
+    const numEl = document.getElementById("co2Num");
+    numEl.textContent = co2;
+    
+    // Rating pill
+    const pill = document.getElementById("ratingPill");
+    pill.textContent = data.rating;
+    const pillColors = {
+      "Low emissions": ["#f0fdf4", "#166534", "#bbf7d0"],
+      "Below average": ["#f0fdf4", "#15803d", "#a7f3d0"],
+      "Average": ["#fffbeb", "#b45309", "#fde68a"],
+      "Above average": ["#fef2f2", "#b91c1c", "#fecaca"],
+      "High emissions": ["#fef2f2", "#991b1b", "#fecaca"],
+    };
+    const [bg, clr, border] = pillColors[data.rating] || ["#fef2f2", "#7b001c", "#fecaca"];
+    pill.style.background = bg;
+    pill.style.color = clr;
+    pill.style.border = `1px solid ${border}`;
+    
+    // Stats
+    const vsDiff = data.vs_average_gkm;
+    const vsEl = document.getElementById("s_vs");
+    vsEl.textContent = (vsDiff >= 0 ? "+" : "") + vsDiff;
+    vsEl.style.color = vsDiff <= 0 ? "#22c55e" : vsDiff > 40 ? "#dc2626" : "#f59e0b";
+    document.getElementById("s_annual").textContent = Math.round(annualCo2).toLocaleString();
+    
+    // Calculate and display trees needed
+    const treesNeeded = calculateTreesNeeded(annualCo2);
+    document.getElementById("treesCount").textContent = treesNeeded.toLocaleString();
+    
+    // Update tree note based on number of trees
+    const treeNote = document.getElementById("treeNote");
+    if (treesNeeded <= 50) {
+      treeNote.innerHTML = `🌱 Good news! Only ${treesNeeded} trees can offset your annual emissions. Each tree absorbs ~22 kg CO₂/year.`;
+    } else if (treesNeeded <= 150) {
+      treeNote.innerHTML = `🌳 You would need to plant ${treesNeeded} trees to neutralize your carbon footprint. Start a small forest!`;
+    } else if (treesNeeded <= 300) {
+      treeNote.innerHTML = `⚠️ ${treesNeeded} trees needed. Consider reducing emissions or supporting reforestation projects.`;
+    } else {
+      treeNote.innerHTML = `🚨 ${treesNeeded} trees required! Urgent action needed. Switch to electric or hybrid vehicle.`;
+    }
+    
+    // Impact message
+    const impactDiv = document.getElementById("impactMsg");
+    if (co2 <= 130) impactDiv.innerHTML = `<p>🌱 Low Environmental Impact · Excellent! Your vehicle produces significantly less CO₂ than average.</p><p>✅ Better than 85% of vehicles in dataset</p>`;
+    else if (co2 <= 180) impactDiv.innerHTML = `<p>🍃 Below Average Impact · Your vehicle has good fuel efficiency.</p><p>✅ Better than 65% of vehicles</p>`;
+    else if (co2 <= 240) impactDiv.innerHTML = `<p>⚠️ Moderate Environmental Impact · Consider optimizing driving habits.</p><p>📊 In the middle range of vehicle emissions</p>`;
+    else if (co2 <= 310) impactDiv.innerHTML = `<p>🔥 Above Average Impact · Higher carbon footprint than typical vehicles.</p><p>💡 Consider a more fuel-efficient alternative</p>`;
+    else impactDiv.innerHTML = `<p>🚨 High Environmental Impact · Significantly high CO₂ emissions.</p><p>🌍 Urgent: Switch to hybrid/electric or reduce usage</p>`;
+    
+    updateGauge(co2);
+  } catch(e) {
+    errEl.innerHTML = `⚠️ ${e.message}<br><small>Make sure Flask server is running: python app.py on port 5000</small>`;
+    errEl.style.display = "block";
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = "⚡ Predict CO₂ Emissions";
+  }
+}
+
+// Attach event listener
+document.getElementById("predictBtn").addEventListener("click", predict);
+
+// Initial slider values
+window.onload = () => {
+  SLIDERS.forEach(([id]) => document.getElementById(id)?.dispatchEvent(new Event("input")));
+};
+</script>
+</body>
+</html>
