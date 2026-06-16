@@ -5,7 +5,7 @@ import pickle, pandas as pd, numpy as np
 app = Flask(__name__)
 CORS(app)
 
-with open("co2_model.pkl","rb") as f:
+with open("random_forest_model.pkl","rb") as f:
     d = pickle.load(f)
 rf_model        = d["model"]
 scaler          = d["scaler"]
